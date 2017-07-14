@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<content>
+	<div class="paddle" , id="one" , style="top: 300px; left: 50px;"></div>
+	<div class = "paddle", id="two" , style="top: 300px; left: -50px;"></div>
+	<div id="ball", style="top: 300px; left: 700px;"></div>
+</content>
+<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	body{
+		height: 89vh;
+		width: 100vw;
+		background-image: url('space.gif');
+		background-size: cover;	
+	}
+	.paddle{
+		position: relative;
+		height: 150px;
+		width: 50px; 
+		background-color: black;
+	}
+	content{
+		display: flex;
+		justify-content: space-between;
+	}
+	#ball{
+		position: fixed;
+		height: 100px;
+		width: 100px;
+		background-color: black;
+		border-radius: 50px;
+	}
+</style>
+<script type="text/javascript">
+	var paddle1 = document.getElementById('one');
+	var paddle2 = document.getElementById('two');
+	var paddle1left = parseFloat(paddle1.style.left.slice(0,-2));
+	var paddle2left = parseFloat(paddle2.style.left.slice(0,-2));
+	var maxHeight = document.body.clientHeight;
+	console.log(paddle1.style.left);
+	function move1(event){
+		var currentTop = parseFloat(paddle1.style.top.slice(0,-2));
+		if(event.key == 'w' && currentTop > 0){
+			paddle1.style.top = (parseFloat(paddle1.style.top.slice(0,-2)) - 20) + 'px';
+		}
+
+		if(event.key == 's' && currentTop + 89 < maxHeight){
+			paddle1.style.top = (parseFloat(paddle1.style.top.slice(0,-2)) + 20) + 'px';
+		}
+
+	}
+	function move2(event){
+		var currentTop = parseFloat(paddle2.style.top.slice(0,-2));
+		if(event.key == 'ArrowUp' && currentTop > 0){
+			paddle2.style.top = (parseFloat(paddle2.style.top.slice(0,-2)) - 50) + 'px';
+		}
+
+		if(event.key == 'ArrowDown' && currentTop +89 < maxHeight){
+			paddle2.style.top = (parseFloat(paddle2.style.top.slice(0,-2)) + 50) + 'px';
+		}
+	}
+	var ball = document.getElementById('ball');
+
+
+	var number ;
+	maxTop = document.body.clientHeight;
+	maxLeft = document.body.clientWidth;
+
+	deltaTop = Math.random()*10;
+	deltaLeft = Math.random()*10;
+	function move(event){
+		if(number!=null){
+			clearInterval(number);
+		}
+
+		number = setInterval(function(){
+			height1 = parseFloat(paddle1.style.top.slice(0,-2));
+			height2 = parseFloat(paddle2.style.top.slice(0,-2));
+			oldTop = parseFloat(ball.style.top.slice(0,-2));
+			oldLeft = parseFloat(ball.style.left.slice(0,-2));
+
+			newTop = oldTop + deltaTop;
+			newLeft = oldLeft + deltaLeft;
+			ball.style.top = newTop + 'px';
+			ball.style.left = newLeft + 'px';
+
+			modHeight1 = newTop-height1;
+			if (modHeight1 < 0){
+				modHeight1 = modHeight1 * -1;
+			}
+
+			modHeight2 = newTop-height2;
+			if (modHeight2 < 0){
+				modHeight2 = modHeight2 * -1;
+			}
+
+			if(newLeft <= paddle1left +50 && modHeight1 < 150){
+				deltaLeft = deltaLeft * -1;
+			}else if(newLeft >= maxLeft + paddle2left -150  && modHeight2 < 150){
+				deltaLeft = deltaLeft * -1;
+			}
+			else if(newLeft >= maxLeft - 65 ){
+				clearInterval(number);
+				alert("Player 1 wins");
+
+			}else if(newLeft < 10){
+				clearInterval(number);
+				alert("Player 2 wins");
+			}
+			if(newTop >= maxTop || newTop < 0){
+				deltaTop = deltaTop * -1;
+			}
+
+		},10)
+	}
+	 ball.addEventListener('mouseover', move);
+	document.body.addEventListener('keydown', move1);
+	document.body.addEventListener('keydown', move2);
+</script>
+</body>
+</html>
